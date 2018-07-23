@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">ScoreBoard</string>
+    <string-array name="quarter">
+        <item>1st Quarter</item>
+        <item>2nd Quarter</item>
+        <item>3rd Quarter</item>
+        <item>4th Quarter</item>
+    </string-array>
+</resources>

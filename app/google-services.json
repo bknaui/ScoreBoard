@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "36444409346",
+    "firebase_url": "https://basketballscore-63101.firebaseio.com",
+    "project_id": "basketballscore-63101",
+    "storage_bucket": "basketballscore-63101.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:36444409346:android:2f782e6ea21ae816",
+        "android_client_info": {
+          "package_name": "com.example.apangcatan.basketballscore"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "36444409346-hi2l2kv23qgkcf5fu753dqdbrc5ojmlp.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.apangcatan.basketballscore",
+            "certificate_hash": "6944cc2fccc7a4e5659c11b177668c8b03fb14e6"
+          }
+        },
+        {
+          "client_id": "36444409346-9q68un86e39ek1a5tcouimni2v8cgceg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCUATbUzUR_OSZUcPae-zQMjEzCZWzp0uk"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "36444409346-9q68un86e39ek1a5tcouimni2v8cgceg.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
