@@ -62,6 +62,8 @@ public class ScoreBoardContract {
 
         void pauseTime();
 
+        /*
+
         void guestAddPoints();
 
         void guestAddFoul();
@@ -85,6 +87,7 @@ public class ScoreBoardContract {
         void homeTimeoutAdd();
 
         void homeTimeoutMinus();
+        */
 
         void playBuzzer();
 

@@ -9,9 +9,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="CHANGE QUARTER"
+        android:text="Select Quarter"
         android:textColor="#fff"
-        android:textSize="32dp"
+        android:textSize="28dp"
         android:textStyle="bold" />
 
     <LinearLayout
