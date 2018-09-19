@@ -87,14 +87,13 @@ public class ScoreBoardActivity extends AppCompatActivity implements ScoreBoardC
         homePointAdd.setOnClickListener(this);
         homePointMinus.setOnClickListener(this);
 
-        homePresenter = new ScoreBoardPresenter(this, buzzer_mp, buzzer_theme);
+        homePresenter = new ScoreBoardPresenter(this);
     }
 
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.quarter:
-                //SHOWS DIALOG
                 dialog.setContentView(R.layout.dialog_quarter_settings);
                 dialog.getWindow().setLayout(900, LinearLayout.LayoutParams.WRAP_CONTENT);
                 final Spinner dialog_settings_quarter = dialog.findViewById(R.id.dialog_settings_quarter);
@@ -154,14 +153,14 @@ public class ScoreBoardActivity extends AppCompatActivity implements ScoreBoardC
                 guestPoints++;
                 displayGuestPoints(guestPoints);
 
-                //Removed because it looks like an overkill
+                /** Removed because it looks like an overkill **/
                 //homePresenter.guestAddPoints();
                 break;
             case R.id.guest_points_minus:
                 guestPoints--;
                 displayGuestPoints(guestPoints);
 
-                //Removed because it looks like an overkill
+                /** Removed because it looks like an overkill **/
                 //homePresenter.guestMinusPoints();
                 break;
 
@@ -169,17 +168,18 @@ public class ScoreBoardActivity extends AppCompatActivity implements ScoreBoardC
                 homePoints++;
                 displayHomePoints(homePoints);
 
-                //Removed because it looks like an overkill
+                /** Removed because it looks like an overkill **/
                 //homePresenter.homeAddPoints();
                 break;
             case R.id.home_points_minus:
                 homePoints--;
                 displayHomePoints(homePoints);
-                //Removed because it looks like an overkill
+
+                /** Removed because it looks like an overkill **/
                 //homePresenter.homeMinusPoints();
                 break;
             case R.id.buzzer:
-                homePresenter.playBuzzer();
+                buzzer_mp.start();
                 break;
             case R.id.help:
                 //TODO: ADD Guide on how to use this app
@@ -234,8 +234,9 @@ public class ScoreBoardActivity extends AppCompatActivity implements ScoreBoardC
     }
 
     @Override
-    public void displayTime(String mins, String seconds) {
-        time.setText(mins + ":" + seconds);
+    public void displayTime(int mins, int seconds) {
+
+        time.setText(String.format("%02d", mins) + ":" + String.format("%02d", seconds));
     }
 
     @Override
@@ -337,8 +338,7 @@ public class ScoreBoardActivity extends AppCompatActivity implements ScoreBoardC
      final EditText dialog_settings_name_guest = dialog.findViewById(R.id.dialog_settings_name);
      Button dialog_settings_button = dialog.findViewById(R.id.dialog_settings_button);
      dialog_settings_button.setOnClickListener(new View.OnClickListener() {
-    @Override
-    public void onClick(View view) {
+    @Override public void onClick(View view) {
     String name = dialog_settings_name_guest.getText().toString();
     if (name.isEmpty()) {
     dialog_settings_name_guest.requestFocus();
@@ -356,8 +356,7 @@ public class ScoreBoardActivity extends AppCompatActivity implements ScoreBoardC
      final EditText dialog_settings_name_home = dialog.findViewById(R.id.dialog_settings_name);
      dialog_settings_button = dialog.findViewById(R.id.dialog_settings_button);
      dialog_settings_button.setOnClickListener(new View.OnClickListener() {
-    @Override
-    public void onClick(View view) {
+    @Override public void onClick(View view) {
     String name = dialog_settings_name_home.getText().toString();
     if (name.isEmpty()) {
     dialog_settings_name_home.requestFocus();

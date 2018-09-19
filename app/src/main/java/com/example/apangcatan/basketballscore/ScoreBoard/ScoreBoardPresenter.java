@@ -1,11 +1,16 @@
 package com.example.apangcatan.basketballscore.ScoreBoard;
 
-import android.media.MediaPlayer;
 import android.os.Handler;
 
 /**
  * Created by apangcatan on 23/03/2018.
  */
+
+/**
+ * UTILITY METHODS AT THE BOTTOM
+ *
+ */
+
 
 public class ScoreBoardPresenter implements ScoreBoardContract.ScorePresenter {
 
@@ -14,7 +19,7 @@ public class ScoreBoardPresenter implements ScoreBoardContract.ScorePresenter {
     int time_minutes = 0;
     int time_seconds = 30;
 
-    // DISABLED FEATURE
+    /**  DISABLED FEATURE **/
     // int homeFoul = 0, homePoints = 0, homeTimeout = 0;
     // int guestFoul = 0, guestPoints = 0, guestTimeout = 0;
 
@@ -25,15 +30,10 @@ public class ScoreBoardPresenter implements ScoreBoardContract.ScorePresenter {
     Handler timeHandler = new Handler();
     Runnable timeRunnable = null;
 
-    MediaPlayer buzzer, theme;
-
     boolean isTimeRunning = false;
 
-    public ScoreBoardPresenter(ScoreBoardContract.ScoreView homeView, MediaPlayer buzzer, MediaPlayer theme) {
+    public ScoreBoardPresenter(ScoreBoardContract.ScoreView homeView) {
         this.homeView = homeView;
-        this.buzzer = buzzer;
-        this.theme = theme;
-
     }
 
     @Override
@@ -81,7 +81,7 @@ public class ScoreBoardPresenter implements ScoreBoardContract.ScorePresenter {
     public void setTime(int minute, int second) {
         time_minutes = minute;
         time_seconds = second;
-        homeView.displayTime(String.format("%02d", time_minutes) + "", String.format("%02d", time_seconds) + "");
+        homeView.displayTime(time_minutes, time_seconds);
     }
 
     @Override
@@ -96,11 +96,13 @@ public class ScoreBoardPresenter implements ScoreBoardContract.ScorePresenter {
             shotclock_seconds = 24;
             homeView.enableShotclockTime();
             homeView.displayShotclock(shotclock_seconds);
-        } else {
-            shotclock_seconds = 24;
-            homeView.displayShotclock(0);
-            homeView.disableShotclockTime();
+            return;
         }
+
+        shotclock_seconds = 24;
+        homeView.displayShotclock(0);
+        homeView.disableShotclockTime();
+
     }
 
     @Override
@@ -114,16 +116,6 @@ public class ScoreBoardPresenter implements ScoreBoardContract.ScorePresenter {
         }
         timeHandler.removeCallbacks(timeRunnable);
 
-    }
-
-    @Override
-    public void playBuzzer() {
-        buzzer.start();
-    }
-
-    @Override
-    public void playTheme() {
-        theme.start();
     }
 
 
@@ -208,7 +200,9 @@ public class ScoreBoardPresenter implements ScoreBoardContract.ScorePresenter {
 
      /****   UTILITY SECTION    ****/
 
-    /** Perform logical operation for shot clock ticks **/
+    /**
+     * Perform logical operation for shot clock ticks
+     **/
     private void getShotclockRunnable() {
         shotclockRunnable = new Runnable() {
             @Override
@@ -225,9 +219,8 @@ public class ScoreBoardPresenter implements ScoreBoardContract.ScorePresenter {
                     time_seconds = 59;
                 }
                 homeView.displayShotclock(shotclock_seconds);
-                homeView.displayTime(String.format("%02d", time_minutes) + "", String.format("%02d", time_seconds) + "");
+                homeView.displayTime(time_minutes, time_seconds);
                 pauseTime();
-                playBuzzer();
                 homeView.displayShotclockPlay();
                 shotclockHandler.removeCallbacks(shotclockRunnable);
             }
@@ -235,46 +228,51 @@ public class ScoreBoardPresenter implements ScoreBoardContract.ScorePresenter {
         };
     }
 
-    /** Perform logical operation for game time ticks **/
+    /**
+     * Perform logical operation for game time ticks
+     **/
     private void getTimeRunnable() {
+
         timeRunnable = new Runnable() {
             @Override
             public void run() {
                 if (time_seconds > 1) {
                     time_seconds--;
-                    homeView.displayTime(String.format("%02d", time_minutes) + "", String.format("%02d", time_seconds) + "");
+                    homeView.displayTime(time_minutes, time_seconds);
                     if (disableShotclock(shotclock_seconds)) {
                         shotclockHandler.removeCallbacks(shotclockRunnable);
                         homeView.displayShotclock(0);
                         homeView.disableShotclockTime();
                     }
                     timeHandler.postDelayed(this, 1000);
-                } else {
-                    if (time_minutes > 0) {
-                        time_minutes--;
-                        time_seconds = 59;
-                        homeView.displayTime(String.format("%02d", time_minutes) + "", String.format("%02d", time_seconds) + "");
-                        timeHandler.postDelayed(this, 1000);
-                    } else {
-                        time_seconds = 0;
-                        homeView.displayTime(String.format("%02d", time_minutes) + "", String.format("%02d", time_seconds) + "");
-                        pauseTime();
-                        pauseShotclock();
-                        playBuzzer();
-                        homeView.displayTimePlay();
-                    }
+                    return;
                 }
+
+                if (time_minutes > 0) {
+                    time_minutes--;
+                    time_seconds = 59;
+                    homeView.displayTime(time_minutes, time_seconds);
+                    timeHandler.postDelayed(this, 1000);
+                    return;
+                }
+                time_seconds = 0;
+                homeView.displayTime(time_minutes, time_seconds);
+                pauseTime();
+                pauseShotclock();
+                homeView.displayTimePlay();
+
             }
         };
     }
 
 
-    /** Checks if there is enough time for shot clock **/
+    /**
+     * Checks if there is enough time for shot clock
+     **/
     public boolean disableShotclock(int temp_shotclock) {
-        boolean ok = false;
         if (time_seconds - temp_shotclock <= 0 && time_minutes <= 0) {
-            ok = true;
+            return true;
         }
-        return ok;
+        return false;
     }
 }

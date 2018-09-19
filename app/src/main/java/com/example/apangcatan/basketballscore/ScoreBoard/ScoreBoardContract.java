@@ -22,7 +22,7 @@ public class ScoreBoardContract {
 
         void displayShotclock(int seconds);
 
-        void displayTime(String mins, String seconds);
+        void displayTime(int mins, int seconds);
 
         void displayGuestPoints(int points);
 
@@ -89,9 +89,6 @@ public class ScoreBoardContract {
         void homeTimeoutMinus();
         */
 
-        void playBuzzer();
-
-        void playTheme();
 
     }
 
