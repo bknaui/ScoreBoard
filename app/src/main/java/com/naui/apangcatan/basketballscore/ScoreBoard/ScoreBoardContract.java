@@ -1,4 +1,4 @@
-package com.example.apangcatan.basketballscore.ScoreBoard;
+package com.naui.apangcatan.basketballscore.ScoreBoard;
 
 /**
  * Created by apangcatan on 23/03/2018.
