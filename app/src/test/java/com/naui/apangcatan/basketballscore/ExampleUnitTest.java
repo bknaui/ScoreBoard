@@ -1,4 +1,4 @@
-package com.example.apangcatan.basketballscore;
+package com.naui.apangcatan.basketballscore;
 
 import org.junit.Test;
 

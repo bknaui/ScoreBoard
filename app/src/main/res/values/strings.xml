@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">ScoreBoard</string>
+    <string name="app_name">DOH BallClub</string>
     <string-array name="quarter">
         <item>1Q</item>
         <item>2Q</item>
