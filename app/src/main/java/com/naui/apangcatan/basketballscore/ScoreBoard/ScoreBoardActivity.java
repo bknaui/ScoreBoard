@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RatingBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -21,15 +22,15 @@ import com.naui.apangcatan.basketballscore.R;
  */
 
 public class ScoreBoardActivity extends AppCompatActivity implements ScoreBoardContract.ScoreView, View.OnClickListener {
-    ImageView guestAddPoints, guestMinusPoints;//, guestFoulAdd, guestFoulMinus, guestTimeoutAdd, guestTimeoutMinus;
-    ImageView homeAddPoints, homeMinusPoints;// homeFoulAdd, homeFoulMinus, homeTimeoutAdd, homeTimeoutMinus;
+    ImageView guestAddPoints, guestMinusPoints;// guestTimeoutAdd, guestTimeoutMinus;
+    ImageView homeAddPoints, homeMinusPoints;// homeTimeoutAdd, homeTimeoutMinus;
+    ImageView pauseTime, playTime, pauseShotclock, playShotclock, restartShotclock, buzzer, help, arrow_left, arrow_right;
 
-    TextView guestPoints;//, guestName,  guestFoulValue, guestTimeoutValue;
-    TextView homePoints;//, homeName, homeFoulValue, homeTimeoutValue;
+    RatingBar home_foul_rating, guest_foul_rating;
 
+    TextView guestPoints, guestName;//  guestFoulValue, guestTimeoutValue;
+    TextView homePoints, homeName;//, homeFoulValue, homeTimeoutValue;
     TextView time, shotclock, quarter;
-
-    ImageView pauseTime, playTime, pauseShotclock, playShotclock, restartShotclock, buzzer, help;
 
     ScoreBoardPresenter homePresenter;
     public static MediaPlayer BUZZER_MP, BUZZER_THEME;
@@ -37,6 +38,9 @@ public class ScoreBoardActivity extends AppCompatActivity implements ScoreBoardC
 
     int guestPointsValue = 0;
     int homePointsValue = 0;
+
+    int guest_foul_counter = 0;
+    int home_foul_counter = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,10 +62,14 @@ public class ScoreBoardActivity extends AppCompatActivity implements ScoreBoardC
         guestAddPoints = findViewById(R.id.guest_points_add);
         guestMinusPoints = findViewById(R.id.guest_points_minus);
         guestPoints = findViewById(R.id.guest_points_value);
+        guestName = findViewById(R.id.guest_team_name);
+        guest_foul_rating = findViewById(R.id.guest_foul_rate);
 
         homeAddPoints = findViewById(R.id.home_points_add);
         homeMinusPoints = findViewById(R.id.home_points_minus);
         homePoints = findViewById(R.id.home_points_value);
+        homeName = findViewById(R.id.home_team_name);
+        home_foul_rating = findViewById(R.id.home_foul_rate);
 
         pauseTime = findViewById(R.id.time_pause);
         playTime = findViewById(R.id.time_play);
@@ -69,6 +77,11 @@ public class ScoreBoardActivity extends AppCompatActivity implements ScoreBoardC
         playShotclock = findViewById(R.id.shotclock_play);
         restartShotclock = findViewById(R.id.shotclock_restart);
 
+        homeName.setOnClickListener(this);
+        guestName.setOnClickListener(this);
+
+        arrow_left = findViewById(R.id.arrow_left);
+        arrow_right = findViewById(R.id.arrow_right);
         time = findViewById(R.id.time);
         shotclock = findViewById(R.id.shotclock);
         quarter = findViewById(R.id.quarter);
@@ -80,6 +93,8 @@ public class ScoreBoardActivity extends AppCompatActivity implements ScoreBoardC
         playShotclock.setOnClickListener(this);
         pauseTime.setOnClickListener(this);
         playTime.setOnClickListener(this);
+        arrow_right.setOnClickListener(this);
+        arrow_left.setOnClickListener(this);
 
         time.setOnClickListener(this);
         quarter.setOnClickListener(this);
@@ -96,16 +111,75 @@ public class ScoreBoardActivity extends AppCompatActivity implements ScoreBoardC
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
+            case R.id.arrow_left:
+                arrow_left.setImageResource(R.drawable.arrow_left);
+                arrow_right.setImageResource(R.drawable.arrow_right_disable);
+                break;
+            case R.id.arrow_right:
+                arrow_left.setImageResource(R.drawable.arrow_left_disable);
+                arrow_right.setImageResource(R.drawable.arrow_right);
+                break;
+            case R.id.guest_team_name:
+                dialog.setContentView(R.layout.dialog_name_settings);
+                dialog.getWindow().setLayout(900, LinearLayout.LayoutParams.WRAP_CONTENT);
+                final EditText guest_name = dialog.findViewById(R.id.dialog_settings_name);
+                Button dialog_settings_button = dialog.findViewById(R.id.dialog_settings_button);
+                dialog_settings_button.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        String name = guest_name.getText().toString();
+                        guestName.setText(name);
+                        dialog.dismiss();
+                    }
+                });
+
+                dialog.show();
+                break;
+            case R.id.home_team_name:
+                dialog.setContentView(R.layout.dialog_name_settings);
+                dialog.getWindow().setLayout(900, LinearLayout.LayoutParams.WRAP_CONTENT);
+                final EditText home_name = dialog.findViewById(R.id.dialog_settings_name);
+                dialog_settings_button = dialog.findViewById(R.id.dialog_settings_button);
+                dialog_settings_button.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        String name = home_name.getText().toString();
+                        homeName.setText(name);
+                        dialog.dismiss();
+                    }
+                });
+
+                dialog.show();
+                break;
             case R.id.quarter:
                 dialog.setContentView(R.layout.dialog_quarter_settings);
                 dialog.getWindow().setLayout(900, LinearLayout.LayoutParams.WRAP_CONTENT);
                 final Spinner dialog_settings_quarter = dialog.findViewById(R.id.dialog_settings_quarter);
-                Button dialog_settings_button = dialog.findViewById(R.id.dialog_settings_button);
+                dialog_settings_button = dialog.findViewById(R.id.dialog_settings_button);
                 dialog_settings_button.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         String selected_quarter = dialog_settings_quarter.getSelectedItem().toString();
                         homePresenter.updateQuarter(selected_quarter);
+
+                        //SWITCHING
+                        if (selected_quarter.equalsIgnoreCase("3Q")) {
+                            //NAME SWITCH
+                            String temp = homeName.getText().toString();
+                            homeName.setText(guestName.getText().toString());
+                            guestName.setText(temp);
+
+                            //SCORE SWITCH
+                            int temp_val = homePointsValue;
+                            homePointsValue = guestPointsValue;
+                            guestPointsValue = temp_val;
+
+                            homePoints.setText(homePointsValue + "");
+                            guestPoints.setText(guestPointsValue + "");
+
+                        }
+                        home_foul_rating.setRating(0);
+                        guest_foul_rating.setRating(0);
                         dialog.dismiss();
                     }
                 });
@@ -283,113 +357,5 @@ public class ScoreBoardActivity extends AppCompatActivity implements ScoreBoardC
     public void enableShotclockTime() {
         shotclock.setTextColor(Color.parseColor("#ff0000"));
     }
-
-
-    /**   DISABLED FEATURES
-     guestName = findViewById(R.id.guest_name);
-     guestFoulAdd = findViewById(R.id.guest_foul_add);
-     guestFoulMinus = findViewById(R.id.guest_foul_minus);
-     guestFoulValue = findViewById(R.id.guest_foul_value);
-
-     guestTimeoutAdd = findViewById(R.id.guest_timeouts_add);
-     guestTimeoutMinus = findViewById(R.id.guest_timeouts_minus);
-     guestTimeoutValue = findViewById(R.id.guest_timeouts_value);
-
-     homeFoulAdd = findViewById(R.id.home_foul_add);
-     homeFoulMinus = findViewById(R.id.home_foul_minus);
-     homeFoulValue = findViewById(R.id.home_foul_value);
-
-     homeTimeoutAdd = findViewById(R.id.home_timeouts_add);
-     homeTimeoutMinus = findViewById(R.id.home_timeouts_minus);
-     homeTimeoutValue = findViewById(R.id.home_timeouts_value);
-     homeName = findViewById(R.id.home_name);
-
-     guestName.setOnClickListener(this);
-
-     guestFoulAdd.setOnClickListener(this);
-     guestFoulMinus.setOnClickListener(this);
-     guestTimeoutAdd.setOnClickListener(this);
-     guestTimeoutMinus.setOnClickListener(this);
-     homeName.setOnClickListener(this);
-
-     homeFoulAdd.setOnClickListener(this);
-     homeFoulMinus.setOnClickListener(this);
-     homeTimeoutAdd.setOnClickListener(this);
-     homeTimeoutMinus.setOnClickListener(this);
-
-     **/
-
-    /**
-     *
-     * DISABLED FEATURE
-     *
-     *
-     case R.id.guest_timeouts_add:
-     homePresenter.guestTimeoutAdd();
-     break;
-     case R.id.guest_timeouts_minus:
-     homePresenter.guestTimeoutMinus();
-     break;
-     case R.id.home_foul_add:
-     homePresenter.homeAddFoul();
-     break;
-     case R.id.home_foul_minus:
-     homePresenter.homeMinusFoul();
-     break;
-
-
-     case R.id.guest_name:
-     dialog.setContentView(R.layout.dialog_name_settings);
-     final EditText dialog_settings_name_guest = dialog.findViewById(R.id.dialog_settings_name);
-     Button dialog_settings_button = dialog.findViewById(R.id.dialog_settings_button);
-     dialog_settings_button.setOnClickListener(new View.OnClickListener() {
-    @Override public void onClick(View view) {
-    String name = dialog_settings_name_guest.getText().toString();
-    if (name.isEmpty()) {
-    dialog_settings_name_guest.requestFocus();
-    dialog_settings_name_guest.setError("Required");
-    } else {
-    homePresenter.updateGuestName(name);
-    dialog.dismiss();
-    }
-    }
-    });
-     dialog.show();
-     break;
-     case R.id.home_name:
-     dialog.setContentView(R.layout.dialog_name_settings);
-     final EditText dialog_settings_name_home = dialog.findViewById(R.id.dialog_settings_name);
-     dialog_settings_button = dialog.findViewById(R.id.dialog_settings_button);
-     dialog_settings_button.setOnClickListener(new View.OnClickListener() {
-    @Override public void onClick(View view) {
-    String name = dialog_settings_name_home.getText().toString();
-    if (name.isEmpty()) {
-    dialog_settings_name_home.requestFocus();
-    dialog_settings_name_home.setError("Required");
-    } else {
-    homePresenter.updateHomeName(name);
-    dialog.dismiss();
-    }
-    }
-    });
-     dialog.show();
-     break;
-
-
-     case R.id.guest_foul_add:
-     homePresenter.guestAddFoul();
-     break;
-     case R.id.guest_foul_minus:
-     homePresenter.guestMinusFoul();
-     break;
-
-     case R.id.home_timeouts_add:
-     homePresenter.homeTimeoutAdd();
-     break;
-     case R.id.home_timeouts_minus:
-     homePresenter.homeTimeoutMinus();
-     break;
-
-     **/
 
 }

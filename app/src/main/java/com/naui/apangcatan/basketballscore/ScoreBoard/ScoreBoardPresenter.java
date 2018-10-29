@@ -21,13 +21,6 @@ public class ScoreBoardPresenter implements ScoreBoardContract.ScorePresenter {
     int timeMinutes;
     int timeSeconds;
 
-    /**
-     * DISABLED FEATURE
-     * int homeFoul = 0, homePoints = 0, homeTimeout = 0;
-     * int guestFoul = 0, guestPoints = 0, guestTimeout = 0;
-     */
-
-
     Handler shotclockHandler = new Handler();
     Runnable shotclockRunnable;
 
@@ -39,7 +32,7 @@ public class ScoreBoardPresenter implements ScoreBoardContract.ScorePresenter {
     public ScoreBoardPresenter(ScoreBoardContract.ScoreView homeView) {
         this.homeView = homeView;
         this.shotclockSeconds = DEFAULT_SHOT_CLOCK_SECONDS;
-        this.timeMinutes = 15;
+        this.timeMinutes = 10;
         this.timeSeconds = 0;
     }
 
@@ -115,6 +108,7 @@ public class ScoreBoardPresenter implements ScoreBoardContract.ScorePresenter {
 
     @Override
     public void pauseTime() {
+        isTimeRunning = false;
         pauseShotclock();
         homeView.displayTimePlay();
         if (shotclockSeconds == 0) {
@@ -125,9 +119,7 @@ public class ScoreBoardPresenter implements ScoreBoardContract.ScorePresenter {
 
     }
 
-    /**
-     * Perform logical operation for game time ticks
-     **/
+    /*Perform logical operation for game time ticks*/
     private void getTimeRunnable() {
 
         timeRunnable = new Runnable() {
@@ -195,9 +187,7 @@ public class ScoreBoardPresenter implements ScoreBoardContract.ScorePresenter {
     }
 
 
-    /**
-     * Checks if there is enough time for shot clock
-     **/
+    /* Checks if there is enough time for shot clock */
     public boolean hasEnoughTime(int shotclock) {
         if (timeSeconds - shotclock <= 0 && timeMinutes <= 0) {
             return true;
@@ -205,68 +195,4 @@ public class ScoreBoardPresenter implements ScoreBoardContract.ScorePresenter {
         return false;
     }
 }
-/**
- * DISABLED FEATURE SECTIONS
- *
- * @Override public void guestAddPoints() {
- * guestPoints++;
- * homeView.displayGuestPoints(guestPoints);
- * //guestRef.setValue(guestPoints);
- * }
- * @Override public void guestAddFoul() {
- * guestFoul++;
- * homeView.displayGuestFoul(guestFoul);
- * }
- * @Override public void guestMinusPoints() {
- * if (guestPoints > 0) {
- * guestPoints--;
- * homeView.displayGuestPoints(guestPoints);
- * }
- * }
- * @Override public void guestMinusFoul() {
- * if (guestFoul > 0) {
- * guestFoul--;
- * homeView.displayGuestFoul(guestFoul);
- * }
- * }
- * @Override public void guestTimeoutAdd() {
- * guestTimeout++;
- * homeView.displayGuestTimeout(guestTimeout);
- * }
- * @Override public void guestTimeoutMinus() {
- * if (guestTimeout > 0) {
- * guestTimeout--;
- * homeView.displayGuestTimeout(guestTimeout);
- * }
- * }
- * @Override public void homeAddPoints() {
- * homePoints++;
- * homeView.displayHomePoints(homePoints);
- * }
- * @Override public void homeAddFoul() {
- * homeFoul++;
- * homeView.displayHomeFoul(homeFoul);
- * }
- * @Override public void homeMinusPoints() {
- * if (homePoints > 0) {
- * homePoints--;
- * homeView.displayHomePoints(homePoints);
- * }
- * }
- * @Override public void homeMinusFoul() {
- * if (homeFoul > 0) {
- * homeFoul--;
- * homeView.displayHomeFoul(homeFoul);
- * }
- * }
- * @Override public void homeTimeoutAdd() {
- * homeTimeout++;
- * homeView.displayHomeTimeout(homeTimeout);
- * }
- * @Override public void homeTimeoutMinus() {
- * if (homeTimeout > 0) {
- * homeTimeout--;
- * homeView.displayHomeTimeout(homeTimeout);
- * }
- * }
- * * /
+
